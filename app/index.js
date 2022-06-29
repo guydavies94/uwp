@@ -9,36 +9,52 @@ app.use(express.json())
 
 
 app.get('/people', async (req, res) => {
-    const results = await database(`
+    try {
+        const results = await database(`
             SELECT id, name, email, age
             FROM people
         `)
-    res.json(results)
+        res.json(results)
+    } catch (err) {
+        console.error(err)
+        res.status(500).end()
+    }
 })
 
 
 app.get('/pets', async (req, res) => {
-    const results = await database(`
+    try {
+        const results = await database(`
             SELECT id, name, species, age, person_id
             FROM pets
         `)
-    res.json(results)
+        res.json(results)
+    } catch (err) {
+        console.error(err)
+        res.status(500).end()
+    }
 })
 
 
 app.get('/people/:id', async (req, res) => {
     const { id } = req.params
+
     if (notIntegerish(id)) return res.status(400).json({
         message: "Parameter 'id' must be an integer."
     })
 
-    const result = await getPersonById(id)
+    try {
+        const result = await getPersonById(id)
 
-    if (!result) return res.status(404).json({
-        message: `No person was found with the id ${id}.`
-    })
+        if (!result) return res.status(404).json({
+            message: `No person was found with the id ${id}.`
+        })
 
-    res.json(result)
+        res.json(result)
+    } catch (err) {
+        console.error(err)
+        res.status(500).end()
+    }
 })
 
 
@@ -48,23 +64,35 @@ app.get('/pets/:id', async (req, res) => {
         message: "Parameter 'id' must be an integer."
     })
 
-    const result = await getPetById(id)
+    try {
+        const result = await getPetById(id)
 
-    if (!result) return res.status(404).json({
-        message: `No pet was found with the id ${id}.`
-    })
+        if (!result) return res.status(404).json({
+            message: `No pet was found with the id ${id}.`
+        })
 
-    res.json(result)
+        res.json(result)
+        if (!result) return res.status(404).json({
+            message: `No person was found with the id ${id}.`
+        })
+
+        res.json(result)
+    } catch (err) {
+        console.error(err)
+        res.status(500).end()
+    }
 })
 
 
 app.get('/people/:id/pets', async (req, res) => {
     const { id } = req.params
+
     if (notIntegerish(id)) return res.status(400).json({
         message: "Parameter 'id' must be an integer."
     })
 
-    const results = await database(`
+    try {
+        const results = await database(`
             SELECT pets.id, pets.name, species, pets.age
             FROM people
             LEFT JOIN pets
@@ -72,13 +100,17 @@ app.get('/people/:id/pets', async (req, res) => {
             WHERE people.id = ?
         `, [+id])
 
-    // If the person doesn't exist, results.length will be zero.
-    // If the person exists but has no pets, results will contain a single row where every field is null. --GAD
-    if (!results.length) return res.status(404).json({
-        message: `No person was found with the id ${id}.`
-    })
+        // If the person doesn't exist, results.length will be zero.
+        // If the person exists but has no pets, results will contain a single row where every field is null. --GAD
+        if (!results.length) return res.status(404).json({
+            message: `No person was found with the id ${id}.`
+        })
 
-    res.json(results.filter(r => r.id !== null))
+        res.json(results.filter(r => r.id !== null))
+    } catch (err) {
+        console.error(err)
+        res.status(500).end()
+    }
 })
 
 
@@ -103,20 +135,18 @@ app.post('/people', async (req, res) => {
 
     try {
         const { insertId } = await database(`
-                INSERT INTO people
-                    (name, email, age)
-                VALUES
-                    (?, ?, ?)
-            `, [name, email, +age])
+            INSERT INTO people
+                (name, email, age)
+            VALUES
+                (?, ?, ?)
+        `, [name, email, +age])
 
         const newPerson = await getPersonById(insertId)
 
         res.status(201).json(newPerson)
     } catch (err) {
-        console.error(`${new Date().toISOString()}: ${err.message}`)
-        res.status(500).json({
-            message: 'An error occurred while creating the person.'
-        })
+        console.error(err)
+        res.status(500).end()
     }
 })
 
@@ -139,11 +169,11 @@ app.post('/pets', async (req, res) => {
 
     try {
         const { insertId } = await database(`
-                INSERT INTO pets
-                    (person_id, name, species, age)
-                VALUES
-                    (?, ?, ?, ?)
-            `, [personId, name, species, +age])
+            INSERT INTO pets
+                (person_id, name, species, age)
+            VALUES
+                (?, ?, ?, ?)
+        `, [personId, name, species, +age])
 
         const newPet = await getPetById(insertId)
 
@@ -155,10 +185,8 @@ app.post('/pets', async (req, res) => {
                 message: `No person was found with the id ${personId}.`
             })
 
-        console.error(`${new Date().toISOString()}: ${err.message}`)
-        res.status(500).json({
-            message: 'An error occurred while creating the person.'
-        })
+        console.error(err)
+        res.status(500).end()
     }
 })
 
@@ -184,23 +212,21 @@ app.put('/people/:id', async (req, res) => {
 
     try {
         const { affectedRows } = await database(`
-                UPDATE people
-                SET
-                    name = ?,
-                    email = ?,
-                    age = ?
-                WHERE id = ?
-            `, [name, email, age, +id])
+            UPDATE people
+            SET
+                name = ?,
+                email = ?,
+                age = ?
+            WHERE id = ?
+        `, [name, email, age, +id])
 
         if (!affectedRows)
             throw new Error('The person exists, but no records were updated.')
 
         res.json(await getPersonById(id))
     } catch (err) {
-        console.error(`${new Date().toISOString()}: ${err.message}`)
-        res.status(500).json({
-            message: 'An error occurred while updating the person.'
-        })
+        console.error(err)
+        res.status(500).end()
     }
 })
 
@@ -226,23 +252,21 @@ app.put('/pets/:id', async (req, res) => {
 
     try {
         const { affectedRows } = await database(`
-                UPDATE pets
-                SET
-                    name = ?,
-                    species = ?,
-                    age = ?
-                WHERE id = ?
-            `, [name, species, age, +id])
+            UPDATE pets
+            SET
+                name = ?,
+                species = ?,
+                age = ?
+            WHERE id = ?
+        `, [name, species, age, +id])
 
         if (!affectedRows)
             throw new Error('The pet exists, but no records were updated.')
 
         res.json(await getPetById(id))
     } catch (err) {
-        console.error(`${new Date().toISOString()}: ${err.message}`)
-        res.status(500).json({
-            message: 'An error occurred while updating the person.'
-        })
+        console.error(err)
+        res.status(500).end()
     }
 })
 
@@ -256,13 +280,18 @@ app.delete('/people/:id', async (req, res) => {
         message: `No person was found with the id ${id}.`
     })
 
-    // ON DELETE CASCADE is set in the person_id FK, so no need to manually delete the pet records. --GAD
-    await database(`
-        DELETE FROM people
-        WHERE id = ?
-    `, [+id])
+    try {
+        // ON DELETE CASCADE is set in the person_id FK, so no need to manually delete the pet records. --GAD
+        await database(`
+            DELETE FROM people
+            WHERE id = ?
+        `, [+id])
 
-    res.json(existingPerson)
+        res.json(existingPerson)
+    } catch (err) {
+        console.error(err)
+        res.status(500).end()
+    }
 })
 
 
@@ -275,12 +304,17 @@ app.delete('/pets/:id', async (req, res) => {
         message: `No person was found with the id ${id}.`
     })
 
-    await database(`
-        DELETE FROM pets
-        WHERE id = ?
-    `, [+id])
+    try {
+        await database(`
+            DELETE FROM pets
+            WHERE id = ?
+        `, [+id])
 
-    res.json(existingPet)
+        res.json(existingPet)
+    } catch (err) {
+        console.error(err)
+        res.status(500).end()
+    }
 })
 
 
