@@ -1,1 +1,219 @@
 // Include styles for your frontend here, make sure it is compiled into css before pushing
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    font-size: 1.6em;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    background-color: var(--primary-background-colour);
+    margin: 0;
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+    --primary-background-colour: #203e90;
+    --secondary-background-colour: #fff;
+}
+
+.tabs {
+    border-radius: 1rem;
+    overflow: hidden;
+    border: solid 0.2rem var(--secondary-background-colour);
+    flex: 1;
+    background-color: var(--secondary-background-colour);
+    display: flex;
+    flex-flow: column;
+}
+
+.error {
+    background-color: #a00;
+    color: var(--secondary-background-colour);
+    padding: 1rem;
+    border-block-end: solid 0.1rem var(--secondary-background-colour);
+}
+
+@media (min-width: 50em) {
+    .tabs {
+        margin: 2rem;
+    }
+}
+
+.app-title {
+    background-color: var(--secondary-background-colour);
+    color: var(--primary-background-colour);
+    font-size: 1.5em;
+    text-align: center;
+    margin: 0;
+    padding: 0.5rem;
+    font-weight: 400;
+}
+
+@keyframes title-loading {
+    0% {
+        background-position: -3rem 0;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+}
+
+.app-title--loading {
+    animation: title-loading 0.2s linear infinite;
+    background-image: repeating-linear-gradient(135deg, var(--primary-background-colour)44 0 1rem, var(--secondary-background-colour) 1rem 2rem);
+    background-size: 400%;
+}
+
+.tabs__buttons {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    background-color: var(--primary-background-colour);
+}
+
+.tabs__buttons__li {
+    flex: 1;
+}
+
+.tabs__buttons__button {
+    appearance: none;
+    display: block;
+    width: 100%;
+    border: none;
+    font-size: 1.5em;
+    padding: 1rem;
+    color: var(--secondary-background-colour);
+    cursor: pointer;
+    background-color: transparent;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+@media (min-width: 50em) {
+    .tabs__buttons__button {
+        font-size: 2em;
+    }
+}
+
+.tabs__buttons__button:hover:not(.tabs__buttons__button--selected) {
+    background-color: var(--secondary-background-colour)4;
+}
+
+.tabs__buttons__button--selected {
+    background-color: var(--secondary-background-colour);
+    color: var(--primary-background-colour);
+}
+
+.panel-container {
+    overflow-y: auto;
+    height: 100%;
+}
+
+.panel {
+    display: flex;
+    height: 100%;
+}
+
+.panel[hidden] {
+    display: none;
+}
+
+.panel--form-open .panel__table-container {
+    display: none;
+}
+
+.editor-form {
+    flex: 1;
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.5em;
+    background-color: #0001;
+    border: solid 0.1rem #0004;
+}
+
+@media (min-width: 50em) {
+    .editor-form {
+        flex: 0 1 40rem;
+    }
+
+    .panel--form-open .panel__table-container {
+        display: block;
+    }
+}
+
+.panel__table-container {
+    flex: 1;
+}
+
+.panel__table {
+    border-collapse: collapse;
+    width: 100%;
+    user-select: none;
+}
+
+.panel__table__row {
+    cursor: pointer;
+}
+
+.panel__table__row:nth-child(even) {
+    background-color: #1111;
+}
+
+.panel__table__row:hover,
+.panel__table__row:focus {
+    background-color: #f15f1c;
+    color: var(--secondary-background-colour);
+}
+
+/* Slight deviation from BEM here just to keep the table markup a bit cleaner */
+.panel__table td,
+.panel__table th {
+    padding: 1rem;
+}
+
+.panel__table th {
+    text-align: start;
+}
+
+.editor-form__rows {
+    display: table;
+    width: 100%;
+}
+
+.editor-form__row {
+    display: table-row;
+}
+
+.editor-form__row__input {
+    width: 100%;
+}
+
+.editor-form__row__input,
+.editor-form__row__label {
+    display: table-cell;
+    vertical-align: middle;
+    margin-block: 1rem;
+}
+
+.editor-form__row__input,
+.editor-form__button {
+    font: inherit;
+}
+
+.editor-form__buttons {
+    margin-block: 2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.panel__create-button {
+    font: inherit;
+    font-size: 1.5em;
+    margin-block: 1rem;
+}

@@ -1,14 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>UWP Fullstack Assessment</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/app.css" rel="stylesheet" />
+    <script src="./app.js" type="module"></script>
+    <title>UWP Fullstack Assessment</title>
 </head>
+
 <body>
 
-  <!-- Render your frontend in this file -->
-  
+    <h1 id="app-title" class="app-title js-app-title">
+        UWPets admin console
+    </h1>
+
+    <div id="app-error" class="error" hidden></div>
+
+    <div class="tabs" id="tabs">
+        <ul class="tabs__buttons" role="tablist">
+            <li class="tabs__buttons__li">
+                <button class="tabs__buttons__button--selected tabs__buttons__button" id="people-tab" aria-controls="people" aria-selected="true" role="tab">
+                    People
+                </button>
+            </li>
+            <li class="tabs__buttons__li">
+                <button class="tabs__buttons__button" id="pets-tab" aria-controls="pets" role="tab">
+                    Pets
+                </button>
+            </li>
+        </ul>
+
+        <div class="panel-container">
+
+            <section class="panel" id="people" aria-labelledby="people-tab" role="tabpanel">
+
+                <form class="editor-form js-editor-form" hidden method="POST">
+                    <button class="js-editor-close-form" type="button">
+                        Close
+                    </button>
+                    <div class="editor-form__rows">
+                        <label class="editor-form__row">
+                            <span class="editor-form__row__label">Name</span>
+                            <input class="editor-form__row__input" data-property="name" type="text" />
+                        </label>
+                        <label class="editor-form__row">
+                            <span class="editor-form__row__label">Email</span>
+                            <input class="editor-form__row__input" data-property="email" type="email" />
+                        </label>
+                        <label class="editor-form__row">
+                            <span class="editor-form__row__label">Age</span>
+                            <input class="editor-form__row__input" data-property="age" type="number" />
+                        </label>
+                    </div>
+                    <div class="editor-form__buttons">
+                        <button class="editor-form__button js-editor-delete" type="button">
+                            Delete
+                        </button>
+                        <button class="editor-form__button" type="submit">
+                            Save
+                        </button>
+                    </div>
+                </form>
+
+                <div class="panel__table-container">
+                    <table class="panel__table">
+                        <thead>
+                            <tr class="panel__table__header">
+                                <th scope="col">ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Age</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template class="js-list-template">
+                                <tr class="panel__table__row" tabindex="0">
+                                    <th scope="row" data-property="id"></th>
+                                    <td data-property="name"></td>
+                                    <td data-property="email"></td>
+                                    <td data-property="age"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+
+                    <button class="panel__create-button js-editor-create">
+                        Create new
+                    </button>
+                </div>
+
+            </section>
+
+            <section class="panel" id="pets" aria-labelledby="pets-tab" hidden role="tabpanel">
+
+                <form class="editor-form js-editor-form" hidden method="POST">
+                    <button class="js-editor-close-form" type="button">
+                        Close
+                    </button>
+                    <div class="editor-form__rows">
+                        <label class="editor-form__row">
+                            <span class="editor-form__row__label">Name</span>
+                            <input class="editor-form__row__input" data-property="name" type="text" />
+                        </label>
+                        <label class="editor-form__row">
+                            <span class="editor-form__row__label">Species</span>
+                            <input class="editor-form__row__input" data-property="species" type="text" />
+                        </label>
+                        <label class="editor-form__row">
+                            <span class="editor-form__row__label">Age</span>
+                            <input class="editor-form__row__input" data-property="age" type="number" />
+                        </label>
+                        <label class="editor-form__row">
+                            <span class="editor-form__row__label">Owner ID</span>
+                            <input class="editor-form__row__input" data-property="person_id" data-writeonly="true" type="number" />
+                        </label>
+                    </div>
+                    <div class="editor-form__buttons">
+                        <button class=" editor-form__button js-editor-delete" type="button">
+                            Delete
+                        </button>
+                        <button class="editor-form__button" type="submit">
+                            Save
+                        </button>
+                    </div>
+                </form>
+
+                <div class="panel__table-container">
+                    <table class="panel__table">
+                        <thead>
+                            <tr class="panel__table__header">
+                                <th scope="col">Name</th>
+                                <th scope="col">Species</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Owner ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template class="js-list-template">
+                                <tr class="panel__table__row" tabindex="0">
+                                    <th data-property="name"></th>
+                                    <td data-property="species"></td>
+                                    <td data-property="age"></td>
+                                    <td data-property="person_id"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+
+                    <button class="panel__create-button js-editor-create">
+                        Create new
+                    </button>
+                </div>
+
+            </section>
+
+        </div>
+
+    </div>
+
 </body>
+
 </html>
