@@ -1,0 +1,10 @@
+{
+    "database": {
+        "connectionLimit": 10,
+        "database": "uwpets",
+        "host": "localhost",
+        "password": "epLyV>j)3&,@KA-;Cgyn",
+        "user": "uwpets"
+    },
+    "port": 80
+}

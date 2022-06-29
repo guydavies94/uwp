@@ -1,0 +1,13 @@
+{
+  "name": "uwp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app/index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "mysql2": "^2.3.3"
+  },
+  "type": "module"
+}
