@@ -1,5 +1,5 @@
 import mysql from 'mysql2/promise'
-import settings from '../settings.json' assert { type: 'json' }
+import settings from './settings.js'
 const pool = mysql.createPool(settings.database)
 
 

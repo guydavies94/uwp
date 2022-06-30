@@ -1,10 +1,10 @@
 import express from 'express'
-import settings from './settings.json' assert { type: 'json' }
+import settings from './settings.js'
 import database from './database.js'
 
 
 const app = express()
-app.use(express.static('public'))
+app.use(express.static('app/public'))
 app.use(express.json())
 
 
@@ -69,11 +69,6 @@ app.get('/pets/:id', async (req, res) => {
 
         if (!result) return res.status(404).json({
             message: `No pet was found with the id ${id}.`
-        })
-
-        res.json(result)
-        if (!result) return res.status(404).json({
-            message: `No person was found with the id ${id}.`
         })
 
         res.json(result)
@@ -242,10 +237,10 @@ app.put('/pets/:id', async (req, res) => {
         message: 'The person ID cannot be changed.'
     })
 
-    const existingPet = await getPersonById(id)
+    const existingPet = await getPetById(id)
 
     if (!existingPet) return res.status(404).json({
-        message: `No person was found with the id ${id}.`
+        message: `No pet was found with the id ${id}.`
     })
 
     const { name, species, age } = { ...existingPet, ...req.body }

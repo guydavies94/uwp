@@ -60,10 +60,12 @@ function expandTemplate(template, data, eventHandlers = {}) {
  * @param {HTMLFormElement} form 
  * @returns {Object}
  */
-function getFormValuesAsObject(form) {
+function getFormValuesAsObject(form, ignoreImmutable = false) {
     return Array.from(form.elements).reduce((acc, current) =>
         current.dataset.property
-            ? { ...acc, [current.dataset.property]: current.value }
+            ? current.dataset.immutable === 'true' && ignoreImmutable
+                ? acc
+                : { ...acc, [current.dataset.property]: current.value }
             : acc
         , {}
     )
@@ -203,12 +205,12 @@ export async function initEditor(editorSelector, apiRoute) {
         switch (formMethod) {
             case 'PUT':
                 deleteButton.hidden = false
-                editorForm.querySelectorAll('[data-writeonly=true]')
+                editorForm.querySelectorAll('[data-immutable=true]')
                     .forEach(el => el.disabled = true)
                 break
             case 'POST':
                 deleteButton.hidden = true
-                editorForm.querySelectorAll('[data-writeonly=true]')
+                editorForm.querySelectorAll('[data-immutable=true]')
                     .forEach(el => el.disabled = false)
                 break
         }
@@ -217,7 +219,7 @@ export async function initEditor(editorSelector, apiRoute) {
     const handleEditorFormSubmit = e => {
         e.preventDefault()
         const route = editorForm.action
-        const formData = getFormValuesAsObject(editorForm)
+        const formData = getFormValuesAsObject(editorForm, formMethod === 'PUT')
             ;
         (async () => {
             try {
